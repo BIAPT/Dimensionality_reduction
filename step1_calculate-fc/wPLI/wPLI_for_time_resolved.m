@@ -12,7 +12,7 @@ FREQUENCY = "alpha";
 %
 INPUT_DIR = '/home/lotte/projects/def-sblain/lotte/Dim_DOC/data';
 OUTPUT_DIR = strcat("/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/", FREQUENCY, "/wpli/");
-NEUROALGO_PATH = "/home/lotte/projects/def-sblain/lotte/NeuroAlgo";
+NEUROALGO_PATH = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/NeuroAlgo";
 addpath(genpath(NEUROALGO_PATH)); % Add NA library to our path so that we can use it
 
 %just to test
