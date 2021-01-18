@@ -12,8 +12,9 @@ import numpy as np
 import sys
 from scipy.io import loadmat
 import pandas as pd
-from utils import extract_features
 sys.path.append('../')
+from utils import extract_features
+
 
 # Loop over these parameters
 #FREQUENCY = ["alpha", "theta", "delta"]
