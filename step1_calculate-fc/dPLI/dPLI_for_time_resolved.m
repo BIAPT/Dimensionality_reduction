@@ -12,12 +12,8 @@ FREQUENCY = "alpha";
 %
 INPUT_DIR = '/home/lotte/projects/def-sblain/lotte/Dim_DOC/data';
 OUTPUT_DIR = strcat("/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/", FREQUENCY, "/dpli/");
-NEUROALGO_PATH = "/home/lotte/projects/def-sblain/lotte/NeuroAlgo";
+NEUROALGO_PATH = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/NeuroAlgo";
 addpath(genpath(NEUROALGO_PATH)); % Add NA library to our path so that we can use it
-
-%just to test
-%INPUT_DIR = 'C:/Users/BIAPT/Desktop/DATA_BASELINE_5min_250Hz';
-%OUTPUT_DIR = 'C:/Users/BIAPT/Desktop/';
 
 % This list contains all participant IDs
 P_IDS = {'WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13','WSAS18', 'WSAS19', 'WSAS20', 'WSAS22'};
@@ -43,6 +39,7 @@ end
 % Size of the cuts for the data
 window_size = 10; % in seconds
 %this parameter is set to 1 (overlapping windows)and 10(non-overlapping windows).
+%step_sizes = ["01", "10"]; % in seconds
 step_sizes = ["01", "10"]; % in seconds
 
 

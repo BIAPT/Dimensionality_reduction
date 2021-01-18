@@ -10,21 +10,15 @@ It will output a pickle and csv with the features for the ML pipeline
 import scipy
 import numpy as np
 import sys
+from scipy.io import loadmat
 import pandas as pd
 from utils import extract_features
 sys.path.append('../')
 
-# for Beluga
-# OUTPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Cluster_DOC/results/features/"
-# INPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Cluster_DOC/results/{}/{}/step{}".format(frequency, mode, step)
-
-# LOCAL
-OUTPUT_DIR = "/Users/User/Documents/GitHUb/Dimensionality_reduction/data/"
-INPUT_DIR = "/Users/User/Documents/GitHUb/Dimensionality_reduction/data/connectivity/"
-
 # Loop over these parameters
 #FREQUENCY = ["alpha", "theta", "delta"]
 #STEP = ["10", "01"]
+frequency = "alpha"
 STEP = ["10"]
 MODE = ["wpli", "dpli"]
 CONDITION = ["Base", "Anes", "Reco"]
@@ -59,14 +53,19 @@ ROI = ['LF_LC', 'LF_LP', 'LF_LO', 'LF_LT',
 for cond in CONDITION:
     for step in STEP:
         for mode in MODE:
+            # for Beluga
+            OUTPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/features/"
+            INPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/{}/{}/step{}/".format(frequency, mode,
+                                                                                                    step)
             # empty dataframe for all participants
             df_wpli_final = pd.DataFrame()
 
             for p_id in P_IDS:
-                part_in = INPUT_DIR +"/{}PLI_{}_step{}_{}.mat".format(mode[0], frequency, step, p_id)
-                part_channels = INPUT_DIR +"/{}PLI_{}_step{}_{}_channels.mat".format(mode[0], frequency, step, p_id)
+                part_in = INPUT_DIR +"{}PLI_{}_step{}_{}_{}.mat".format(mode[0], frequency, step, p_id, cond)
+                part_channels = INPUT_DIR +"{}PLI_{}_step{}_{}_{}_channels.mat".format(mode[0], frequency, step, p_id, cond)
 
-                data = scipy.io.loadmat(part_in)['{}_tofill'.format(mode)]
+                data = loadmat(part_in)
+                data = data["{}pli_tofill".format(mode[0])]
                 channel = scipy.io.loadmat(part_channels)['channels'][0][0]
                 print('Load data comlpete {}PLI_{}_step{}_{}_channels'.format(mode[0], frequency, step, p_id))
 
@@ -109,7 +108,7 @@ for cond in CONDITION:
                 names.insert(2, 'Phase')
                 names.insert(3, 'Time')
 
-                State = "Base"
+                State = cond
 
                 missingel = []
                 time_steps=data.shape[0]
@@ -178,6 +177,6 @@ for cond in CONDITION:
 
             df_wpli_final.columns = names
 
-            df_wpli_final.to_pickle(OUTPUT_DIR + "33_Part_{}_10_{}_{}.pickle".format(mode, step, frequency), protocol=4)
-            df_wpli_final.to_csv(OUTPUT_DIR + "33_Part_{}_10_{}_{}.csv".format(mode, step, frequency))
+            df_wpli_final.to_pickle(OUTPUT_DIR + "WSAS_{}_10_{}_{}.pickle".format(mode, step, frequency), protocol=4)
+            df_wpli_final.to_csv(OUTPUT_DIR + "WSAS_{}_10_{}_{}.csv".format(mode, step, frequency))
 
