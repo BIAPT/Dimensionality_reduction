@@ -51,17 +51,18 @@ ROI = ['LF_LC', 'LF_LP', 'LF_LO', 'LF_LT',
 
        'LF_RF', 'LC_RC', 'LP_RP', 'LT_RT', 'LO_RO']
 
-for cond in CONDITION:
-    for step in STEP:
-        for mode in MODE:
-            # for Beluga
-            OUTPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/features/"
-            INPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/{}/{}/step{}/".format(frequency, mode,
-                                                                                                    step)
-            # empty dataframe for all participants
-            df_wpli_final = pd.DataFrame()
 
-            for p_id in P_IDS:
+for step in STEP:
+    for mode in MODE:
+        # for Beluga
+        OUTPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/features/"
+        INPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/{}/{}/step{}/".format(frequency, mode,
+                                                                                                step)
+        # empty dataframe for all participants
+        df_wpli_final = pd.DataFrame()
+
+        for p_id in P_IDS:
+            for cond in CONDITION:
                 part_in = INPUT_DIR +"{}PLI_{}_step{}_{}_{}.mat".format(mode[0], frequency, step, p_id, cond)
                 part_channels = INPUT_DIR +"{}PLI_{}_step{}_{}_{}_channels.mat".format(mode[0], frequency, step, p_id, cond)
 
@@ -178,6 +179,6 @@ for cond in CONDITION:
 
             df_wpli_final.columns = names
 
-            df_wpli_final.to_pickle(OUTPUT_DIR + "WSAS_{}_10_{}_{}.pickle".format(mode, step, frequency), protocol=4)
-            df_wpli_final.to_csv(OUTPUT_DIR + "WSAS_{}_10_{}_{}.csv".format(mode, step, frequency))
+    df_wpli_final.to_pickle(OUTPUT_DIR + "WSAS_{}_10_{}_{}.pickle".format(mode, step, frequency), protocol=4)
+    df_wpli_final.to_csv(OUTPUT_DIR + "WSAS_{}_10_{}_{}.csv".format(mode, step, frequency))
 
