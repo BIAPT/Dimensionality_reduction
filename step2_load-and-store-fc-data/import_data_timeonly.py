@@ -71,7 +71,7 @@ for step in STEP:
                         cond = 'Sedoff'
                     if cond == 'Anes':
                         cond = 'Sedon1'
-                if p_id.__contains__('MDFA'):
+                if p_id.__contains__('MCD'):
                     if cond == 'Base':
                         cond = 'eyesclosed1'
                     if cond == 'Anes':
