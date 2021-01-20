@@ -20,12 +20,14 @@ from utils import extract_features
 #FREQUENCY = ["alpha", "theta", "delta"]
 #STEP = ["10", "01"]
 frequency = "alpha"
-STEP = ["10"]
+STEP = ["01","10"]
 MODE = ["wpli", "dpli"]
-CONDITION = ["Base", "Anes", "Reco"]
+CONDITION = ["Base", "Anes"]
 
-P_IDS = ['WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13','WSAS18',
-         'WSAS19', 'WSAS20', 'WSAS22']
+P_IDS = ['WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13',
+         'WSAS18', 'WSAS19', 'WSAS20', 'WSAS22',
+         'MCD0004', 'MCD0007', 'MCD0008', 'MCD0009', 'MCD0012', 'MCD0013','MCD0014', 'MCD0018', 'MCD0021'
+         '002MG', '003MG', '004MG', '004MW']
 
 ROI = ['LF_LC', 'LF_LP', 'LF_LO', 'LF_LT',
        'LT_LO', 'LT_LC', 'LT_LP',
@@ -51,25 +53,37 @@ ROI = ['LF_LC', 'LF_LP', 'LF_LO', 'LF_LT',
 
        'LF_RF', 'LC_RC', 'LP_RP', 'LT_RT', 'LO_RO']
 
-
 for step in STEP:
     for mode in MODE:
         # for Beluga
         OUTPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/features/"
-        INPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/{}/{}/step{}/".format(frequency, mode,
-                                                                                                step)
+        INPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/{}/{}/step{}/".format(frequency, mode, step)
+        #OUTPUT_DIR = "../data/features/"
+        #INPUT_DIR = "../data/connectivity/{}/{}/step{}/".format(frequency, mode,step)
         # empty dataframe for all participants
         df_wpli_final = pd.DataFrame()
 
         for p_id in P_IDS:
             for cond in CONDITION:
+                # change the condition name for other groups
+                if p_id.__contains__('MW') or p_id.__contains__('MG'):
+                    if cond == 'Base':
+                        cond = 'Sedoff'
+                    if cond == 'Anes':
+                        cond = 'Sedon1'
+                if p_id.__contains__('MDFA'):
+                    if cond == 'Base':
+                        cond = 'eyesclosed1'
+                    if cond == 'Anes':
+                        cond = 'emergencefirst5'
+
                 part_in = INPUT_DIR +"{}PLI_{}_step{}_{}_{}.mat".format(mode[0], frequency, step, p_id, cond)
                 part_channels = INPUT_DIR +"{}PLI_{}_step{}_{}_{}_channels.mat".format(mode[0], frequency, step, p_id, cond)
 
                 data = loadmat(part_in)
                 data = data["{}pli_tofill".format(mode[0])]
                 channel = scipy.io.loadmat(part_channels)['channels'][0][0]
-                print('Load data comlpete {}PLI_{}_step{}_{}_channels'.format(mode[0], frequency, step, p_id))
+                print('Load data comlpete {}'.format(part_in))
 
                 channels = []
                 for a in range(0,len(channel)):
@@ -110,17 +124,15 @@ for step in STEP:
                 names.insert(2, 'Phase')
                 names.insert(3, 'Time')
 
-                State = cond
-
                 missingel = []
                 time_steps=data.shape[0]
 
                 df_wpli = pd.DataFrame(np.zeros((time_steps,len(names))))
 
-                name = "{}_Base".format(p_id)
+                name = "{}_{}".format(p_id,cond)
                 df_wpli.iloc[:,0] = name
                 df_wpli.iloc[:,1] = ID
-                df_wpli.iloc[:,2] = State
+                df_wpli.iloc[:,2] = cond
 
                 # initialize a dict of regions and referring electrodes
                 regions = {}
@@ -172,13 +184,13 @@ for step in STEP:
                         df_wpli.iloc[t, i] = conn
 
                         i += 1
-
-                df_wpli_final = df_wpli_final.append(df_wpli)
+                df_wpli.columns = names
+                df_wpli_final = pd.concat([df_wpli_final,df_wpli])
                 print("Participant" + name + "   finished")
                 print("missing electrodes: " + str(list(set(missingel))))
 
-            df_wpli_final.columns = names
+                df_wpli_final.columns = names
 
-    df_wpli_final.to_pickle(OUTPUT_DIR + "WSAS_{}_10_{}_{}.pickle".format(mode, step, frequency), protocol=4)
-    df_wpli_final.to_csv(OUTPUT_DIR + "WSAS_{}_10_{}_{}.csv".format(mode, step, frequency))
+        df_wpli_final.to_pickle(OUTPUT_DIR + "23_Part_{}_10_{}_{}.pickle".format(mode, step, frequency), protocol=4)
+        df_wpli_final.to_csv(OUTPUT_DIR + "23_Part_{}_10_{}_{}.csv".format(mode, step, frequency))
 

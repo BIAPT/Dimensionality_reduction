@@ -3,3 +3,4 @@
 *.fdt
 *.mat
 data/*
+*.pdf

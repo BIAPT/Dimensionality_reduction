@@ -2,7 +2,7 @@ classdef ccSBATCH
     % Compute Canada SBATCH submission arguments
     properties
         % Local script, remote working directory (home, by default)
-        localScript = 'dPLI_for_time_resolved';
+        localScript = 'dPLI_for_time_resolved_MDFA';
         workingDirectory = '.';
 
         % You must specify a compute account (def, rrg, rpp or ctb type)
@@ -18,7 +18,7 @@ classdef ccSBATCH
         memPerCPU = '9000'
 
         % Requested walltime
-        walltime = '05:00:00'
+        walltime = '03:00:00'
 
         % You may use otherOptions to append a string to the qsub command
         % e.g.
