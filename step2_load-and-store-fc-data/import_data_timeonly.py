@@ -26,7 +26,7 @@ CONDITION = ["Base", "Anes"]
 
 P_IDS = ['WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13',
          'WSAS18', 'WSAS19', 'WSAS20', 'WSAS22',
-         'MCD0004', 'MCD0007', 'MCD0008', 'MCD0009', 'MCD0012', 'MCD0013','MCD0014', 'MCD0018', 'MCD0021'
+         'MCD0004', 'MCD0007', 'MCD0008', 'MCD0009', 'MCD0012', 'MCD0013','MCD0014', 'MCD0018', 'MCD0021',
          '002MG', '003MG', '004MG', '004MW']
 
 ROI = ['LF_LC', 'LF_LP', 'LF_LO', 'LF_LT',
@@ -56,10 +56,10 @@ ROI = ['LF_LC', 'LF_LP', 'LF_LO', 'LF_LT',
 for step in STEP:
     for mode in MODE:
         # for Beluga
-        OUTPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/features/"
-        INPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/{}/{}/step{}/".format(frequency, mode, step)
-        #OUTPUT_DIR = "../data/features/"
-        #INPUT_DIR = "../data/connectivity/{}/{}/step{}/".format(frequency, mode,step)
+        #OUTPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/features/"
+        #INPUT_DIR = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/{}/{}/step{}/".format(frequency, mode, step)
+        OUTPUT_DIR = "../data/features/"
+        INPUT_DIR = "../data/connectivity/{}/{}/step{}/".format(frequency, mode,step)
         # empty dataframe for all participants
         df_wpli_final = pd.DataFrame()
 
@@ -131,7 +131,7 @@ for step in STEP:
 
                 name = "{}_{}".format(p_id,cond)
                 df_wpli.iloc[:,0] = name
-                df_wpli.iloc[:,1] = ID
+                df_wpli.iloc[:,1] = p_id
                 df_wpli.iloc[:,2] = cond
 
                 # initialize a dict of regions and referring electrodes
