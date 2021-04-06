@@ -22,7 +22,7 @@ CONDITION = {'sedon1', 'sedoff'};
 
 %% dpli Parameters:
 p_value = 0.05;
-number_surrogates = 10;
+number_surrogates = 20;
 
 
 if FREQUENCY == "alpha"

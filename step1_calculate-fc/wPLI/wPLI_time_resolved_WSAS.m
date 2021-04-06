@@ -20,13 +20,13 @@ addpath(genpath(NEUROALGO_PATH)); % Add NA library to our path so that we can us
 %OUTPUT_DIR = 'C:/Users/BIAPT/Desktop/';
 
 % This list contains all participant IDs
-%P_IDS = {'WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13','WSAS18', 'WSAS19', 'WSAS20', 'WSAS22'};
-P_IDS = {'WSAS18', 'WSAS19', 'WSAS20', 'WSAS22'};
-CONDITION = {'Base', 'Anes', 'Reco'};
+P_IDS = {'WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13','WSAS18', 'WSAS19', 'WSAS20', 'WSAS22'};
+%CONDITION = {'Base', 'Anes', 'Reco'};
+CONDITION = {'Base', 'Anes'};
 
 %% wPLI Parameters:
 p_value = 0.05;
-number_surrogates = 10;
+number_surrogates = 20;
 
 if FREQUENCY == "alpha"
     low_frequency = 8;

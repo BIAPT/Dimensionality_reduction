@@ -21,7 +21,7 @@ CONDITION = {'eyesclosed1', 'eyesclosed8', 'emergencefirst5'};
 
 %% dpli Parameters:
 p_value = 0.05;
-number_surrogates = 10;
+number_surrogates = 20;
 
 
 if FREQUENCY == "alpha"

@@ -14,6 +14,7 @@ data_d=data_d[data_d['ID'] != "003MG"]
 
 areas=data_w.columns[4:]
 data = data_w.iloc[:,:4]
+X=data_w[areas]
 X = np.hstack((data_w[areas],data_d[areas]))
 
 X.shape
@@ -28,7 +29,11 @@ participants = ['WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSA
          'MCD0004', 'MCD0007', 'MCD0008', 'MCD0009', 'MCD0012', 'MCD0013','MCD0014', 'MCD0018', 'MCD0021',
          '002MG', '004MG', '004MW']
 
+outcome = ['0', '1', '0', '1', '1', '1', '1', '1', '0', '0', '1',
+         '2', '2', '2', '2', '2', '2','2','2','2',
+         '3', '3', '3']
 oneD = []
+ex_var = []
 
 for part in participants:
     if part.__contains__('MW') or part.__contains__('MG'):
@@ -46,9 +51,23 @@ for part in participants:
     data_one=pd.DataFrame(np.transpose(np.vstack((data_one.flatten(),label_part))))
     data_one.columns = ['conn_1D','label']
     oneD.append(data_one)
+    ex_var.append(pca.explained_variance_[0])
 
 
 pdf = matplotlib.backends.backend_pdf.PdfPages("individual_PCA_BA_wdpli_1D.pdf")
+
+toplot = pd.DataFrame()
+toplot['variance'] = ex_var
+toplot['ID'] = participants
+toplot['outcome'] = outcome
+
+plt.figure()
+sns.boxplot(x = 'outcome', y = 'variance', data = toplot)
+sns.stripplot(x = 'outcome', y = 'variance', size=4, color=".3",data = toplot)
+plt.xticks([0,1,2,3],['non-recovered','recoveded','healthy','NET_ICU'])
+plt.title("PCA_1_explained_Variance")
+plt.show()
+pdf.savefig()
 
 for i,p in enumerate(participants):
     data = oneD[i]
