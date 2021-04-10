@@ -2,7 +2,7 @@ classdef ccSBATCH
     % Compute Canada SBATCH submission arguments
     properties
         % Local script, remote working directory (home, by default)
-        localScript = 'wPLI_time_resolved_WSAS';
+        localScript = 'wPLI_time_resolved_NET_ICU';
         workingDirectory = '.';
 
         % You must specify a compute account (def, rrg, rpp or ctb type)

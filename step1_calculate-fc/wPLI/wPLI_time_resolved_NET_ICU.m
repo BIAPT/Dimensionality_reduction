@@ -3,8 +3,8 @@
 % The matrices will be generated twice: once with overlapping and
 % once with non-overlapping windows in the alpha bandwidth.  
 
-FREQUENCY = "alpha";
-%FREQUENCY = "theta";
+%FREQUENCY = "alpha";
+FREQUENCY = "theta";
 %FREQUENCY = "delta";
 
 
@@ -16,7 +16,7 @@ NEUROALGO_PATH = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/NeuroAlgo";
 addpath(genpath(NEUROALGO_PATH)); % Add NA library to our path so that we can use it
 
 % This list contains all participant IDs
-P_IDS = {'002MG', '003MG', '004MG', '004MW'};
+P_IDS = {'002MG', '003MG', '004MG', '004MW', '005MW', '006MW', '007MG', '009MG', '010MG'};
 CONDITION = {'sedon1', 'sedoff'};
 
 %% wPLI Parameters:

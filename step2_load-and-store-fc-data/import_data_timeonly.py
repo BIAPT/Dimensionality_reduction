@@ -25,10 +25,14 @@ MODE = ["wpli", "dpli"]
 CONDITION = ["Base", "Anes"]
 
 P_IDS = ['WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13',
+         'WSAS18', 'WSAS19', 'WSAS20', 'WSAS22']
+
+"""
+P_IDS = ['WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13',
          'WSAS18', 'WSAS19', 'WSAS20', 'WSAS22',
          'MCD0004', 'MCD0007', 'MCD0008', 'MCD0009', 'MCD0012', 'MCD0013','MCD0014', 'MCD0018', 'MCD0021',
          '002MG', '003MG', '004MG', '004MW']
-
+"""
 ROI = ['LF_LC', 'LF_LP', 'LF_LO', 'LF_LT',
        'LT_LO', 'LT_LC', 'LT_LP',
        'LP_LO', 'LP_LC',
