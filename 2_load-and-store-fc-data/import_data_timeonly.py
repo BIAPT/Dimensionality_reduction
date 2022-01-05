@@ -19,20 +19,16 @@ from utils import extract_features
 # Loop over these parameters
 #FREQUENCY = ["alpha", "theta", "delta"]
 #STEP = ["10", "01"]
-frequency = "alpha"
+frequency = "theta"
 STEP = ["01","10"]
 MODE = ["wpli", "dpli"]
 CONDITION = ["Base", "Anes"]
 
 P_IDS = ['WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13',
-         'WSAS18', 'WSAS19', 'WSAS20', 'WSAS22']
-
-"""
-P_IDS = ['WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13',
          'WSAS18', 'WSAS19', 'WSAS20', 'WSAS22',
-         'MCD0004', 'MCD0007', 'MCD0008', 'MCD0009', 'MCD0012', 'MCD0013','MCD0014', 'MCD0018', 'MCD0021',
-         '002MG', '003MG', '004MG', '004MW']
-"""
+         '002MG', '003MG', '004MG', '004MW', '005MW', '006MW', '007MG', '009MG', '010MG',
+         'MDFA05', 'MDFA06', 'MDFA11', 'MDFA15', 'MDFA17']
+
 ROI = ['LF_LC', 'LF_LP', 'LF_LO', 'LF_LT',
        'LT_LO', 'LT_LC', 'LT_LP',
        'LP_LO', 'LP_LC',
@@ -72,14 +68,14 @@ for step in STEP:
                 # change the condition name for other groups
                 if p_id.__contains__('MW') or p_id.__contains__('MG'):
                     if cond == 'Base':
-                        cond = 'Sedoff'
+                        cond = 'sedoff'
                     if cond == 'Anes':
-                        cond = 'Sedon1'
-                if p_id.__contains__('MCD'):
+                        cond = 'sedon1'
+                if p_id.__contains__('MDFA'):
                     if cond == 'Base':
-                        cond = 'eyesclosed1'
+                        cond = 'Base'
                     if cond == 'Anes':
-                        cond = 'emergencefirst5'
+                        cond = 'indlast5'
 
                 part_in = INPUT_DIR +"{}PLI_{}_step{}_{}_{}.mat".format(mode[0], frequency, step, p_id, cond)
                 part_channels = INPUT_DIR +"{}PLI_{}_step{}_{}_{}_channels.mat".format(mode[0], frequency, step, p_id, cond)
@@ -195,6 +191,6 @@ for step in STEP:
 
                 df_wpli_final.columns = names
 
-        df_wpli_final.to_pickle(OUTPUT_DIR + "23_Part_{}_10_{}_{}.pickle".format(mode, step, frequency), protocol=4)
-        df_wpli_final.to_csv(OUTPUT_DIR + "23_Part_{}_10_{}_{}.csv".format(mode, step, frequency))
+        df_wpli_final.to_pickle(OUTPUT_DIR + "25_Part_{}_10_{}_{}.pickle".format(mode, step, frequency), protocol=4)
+        df_wpli_final.to_csv(OUTPUT_DIR + "25_Part_{}_10_{}_{}.csv".format(mode, step, frequency))
 

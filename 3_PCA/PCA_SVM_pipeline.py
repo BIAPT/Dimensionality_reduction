@@ -14,41 +14,50 @@ from mpl_toolkits.mplot3d import Axes3D
 from scipy.spatial import distance
 from sklearn.model_selection import cross_validate
 
-#mode = "dPLI"
+#mode = "wPLI"
 mode = "both"
 
 
 if mode == "both":
-    data_w=pd.read_pickle('../data/features/23_Part_{}_10_01_alpha.pickle'.format('wPLI'))
+    data_w=pd.read_pickle('../data/features/25_Part_{}_10_01_alpha.pickle'.format('wPLI'))
     data_w=data_w[data_w['ID']!="003MG"]
-    data_d=pd.read_pickle('../data/features/23_Part_{}_10_01_alpha.pickle'.format('dPLI'))
+    data_d=pd.read_pickle('../data/features/25_Part_{}_10_01_alpha.pickle'.format('dPLI'))
     data_d=data_d[data_d['ID']!="003MG"]
     areas=data_w.columns[4:]
     info = data_w.iloc[:,:4]
     X = np.hstack((data_w[areas],data_d[areas]))
 
 else:
-    data=pd.read_pickle('../data/features/23_Part_{}_10_01_alpha.pickle'.format(mode))
+    data=pd.read_pickle('../data/features/25_Part_{}_10_01_alpha.pickle'.format(mode))
     data=data[data['ID']!="003MG"]
     areas=data.columns[4:]
     info = data.iloc[:,:4]
     X = data[areas]
 
 label = np.zeros(len(info['Phase']))
-label[np.where(info['Phase']=='Anes')]=1
-label[np.where(info['Phase']=='Sedon1')]=1
-label[np.where(info['Phase']=='emergencefirst5')]=1
+label[np.where(info['Phase']=='Anes')] = 1
+label[np.where(info['Phase']=='sedon1')] = 1
+label[np.where(info['Phase']=='indlast5')] = 1
 
-participants = ['WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13',
+IDS = ['WSAS05', 'WSAS02', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13',
          'WSAS18', 'WSAS19', 'WSAS20', 'WSAS22',
-         'MCD0004', 'MCD0007', 'MCD0008', 'MCD0009', 'MCD0012', 'MCD0013','MCD0014', 'MCD0018', 'MCD0021',
-         '002MG', '004MG', '004MW']
+         '002MG', '004MG', '004MW', '005MW', '006MW', '007MG', '009MG', '010MG',
+         'MDFA05', 'MDFA06', 'MDFA11', 'MDFA15', 'MDFA17']
 
-outcome = ['0', '1', '0', '1', '1', '1', '1', '1', '0', '0', '1',
-         '2', '2', '2', '2', '2', '2','2','2','2',
-         '3', '3', '3']
+# define outcome:
+# 0 = WSAS non-recovered
+# 1 = WSAS recovered
+# 2 = NET_ICU non-recovered
+# 3 = NET_ICU recovered
+# 4 = NET_ICU unknown
+# 5 = Healthy
 
-pdf = matplotlib.backends.backend_pdf.PdfPages("individual_SVM_PCA_BA_{}.pdf".format(mode))
+outcome = ['0', '1', '1', '0', '0', '0', '0','0', '1', '1', '0',
+         '2',  '2', '3', '4', '2', '3', '3', '3',
+         '5', '5', '5', '5', '5']
+
+
+pdf = matplotlib.backends.backend_pdf.PdfPages("averaged_SVM_PCA_BA_{}.pdf".format(mode))
 
 SVM_weights = []
 SVM_acc = []
@@ -64,13 +73,15 @@ cross_val_acc =[]
 allD_Dist_bet_norm = []
 allD_Dist_bet_norm2 = []
 
-for part in participants:
+for part in IDS:
+    print(part + "  started analysis")
+
     if part.__contains__('MW') or part.__contains__('MG'):
-        phases = ['Sedoff', 'Sedon1']
+        phases = ['sedoff', 'sedon1']
     if part.__contains__('WSAS'):
         phases = ['Base', 'Anes']
     if part.__contains__('MCD'):
-        phases = ['eyesclosed1', 'emergencefirst5']
+        phases = ['Base', 'indlast5']
 
     X_part = X[info['ID'] == part]
     label_part = label[info['ID'] == part]
@@ -127,20 +138,20 @@ for part in participants:
     """
     Get High Dimensional Distance
     """
-    overall_dist = np.mean(distance.cdist(X_part, X_part, 'euclidean'))
+    overall_dist = np.sum(distance.cdist(X_part, X_part, 'euclidean'))/2
 
     dist_bet = distance.cdist(X_part[label_part==0], X_part[label_part==1], 'euclidean')
-    allD_Dist_bet.append(np.mean(dist_bet))
+    allD_Dist_bet.append(np.sum(dist_bet))
 
-    allD_Dist_bet_norm.append(np.mean(dist_bet)/overall_dist)
+    allD_Dist_bet_norm.append(np.sum(dist_bet)/overall_dist)
 
     dist_within_b = distance.cdist(X_part[label_part==0], X_part[label_part==0], 'euclidean')
-    allD_Dist_w_Base.append(np.mean(dist_within_b))
+    allD_Dist_w_Base.append(np.sum(dist_within_b)/2)
 
     dist_within_a = distance.cdist(X_part[label_part==1], X_part[label_part==1], 'euclidean')
-    allD_Dist_w_Anes.append(np.mean(dist_within_a))
+    allD_Dist_w_Anes.append(np.sum(dist_within_a)/2)
 
-    allD_Dist_bet_norm2.append(np.mean(dist_bet) / np.mean(dist_within_b))
+    allD_Dist_bet_norm2.append(np.sum(dist_bet) / (np.sum(dist_within_b)/2))
 
     """
     Run PCA 1D
@@ -184,7 +195,7 @@ for part in participants:
     allD_variance.append(sum(pca.explained_variance_))
 
 
-for i,p in enumerate(participants):
+for i,p in enumerate(IDS):
     data = oneD_PCA[i]
     a = sns.displot(data=data, x = "PCA_1D", hue = "label", kind = "kde",fill=True)
     a._legend.set_title(p)
@@ -193,19 +204,19 @@ for i,p in enumerate(participants):
 
 if mode == 'both':
     SVM_weights = pd.DataFrame(SVM_weights)
-    nonr_weight = SVM_weights[np.array(outcome) == '1']
-    reco_weight = SVM_weights[np.array(outcome) == '0']
-    heal_weight = SVM_weights[np.array(outcome) == '2']
+    nonr_weight = SVM_weights[np.array(outcome) == '0']
+    reco_weight = SVM_weights[np.array(outcome) == '1']
+    heal_weight = SVM_weights[np.array(outcome) == '5']
 
 if mode != 'both':
     SVM_weights = pd.DataFrame(SVM_weights, columns=areas)
-    nonr_weight = SVM_weights[np.array(outcome) == '1']
-    reco_weight = SVM_weights[np.array(outcome) == '0']
-    heal_weight = SVM_weights[np.array(outcome) == '2']
+    nonr_weight = SVM_weights[np.array(outcome) == '0']
+    reco_weight = SVM_weights[np.array(outcome) == '1']
+    heal_weight = SVM_weights[np.array(outcome) == '5']
 
 
     for i in range(0,len(nonr_weight)):
-        tmp  = np.array(nonr_weight.iloc[i,:])
+        tmp = np.array(nonr_weight.iloc[i,:])
         weights_tmp = pd.DataFrame(tmp.reshape(-1, len(tmp)), columns=areas)
         visualize.plot_connectivity(weights_tmp)
         plt.text(-20,0.75,"SVM_non-recovered")
@@ -249,71 +260,18 @@ toplot['Norm2_Distance between Base-Anes'] = allD_Dist_bet_norm
 toplot['Distance within Anes'] = allD_Dist_w_Anes
 toplot['Distance within Base'] = allD_Dist_w_Base
 toplot['overall variance'] = allD_variance
-toplot['ID'] = participants
+toplot['ID'] = IDS
 toplot['outcome'] = outcome
 
 for i in toplot.columns[:-2]:
     plt.figure()
     sns.boxplot(x = 'outcome', y = i, data = toplot)
     sns.stripplot(x = 'outcome', y = i, size=4, color=".3",data = toplot)
-    plt.xticks([0,1,2,3],['recovered','non-recoveded','healthy','NET_ICU'])
+    plt.xticks([0, 1, 2, 3, 4, 5], ['W_NR', 'W_R', 'N_NR',
+                                    'N_R', 'N_U', 'HC'])
     plt.title( i )
     pdf.savefig()
     plt.close()
-
-out_color = [int(numeric_string) for numeric_string in np.array(toplot['outcome'])]
-
-
-plt.figure()
-n = np.where(toplot['outcome']=='0')[0]
-plt.scatter(x= toplot['Distance between Base-Anes'][n], y = toplot['Distance within Base'][n],
-            label = 'recovered')
-n = np.where(toplot['outcome']=='1')[0]
-plt.scatter(x= toplot['Distance between Base-Anes'][n], y = toplot['Distance within Base'][n],
-            label = 'non- recovered')
-n = np.where(toplot['outcome']=='2')[0]
-plt.scatter(x= toplot['Distance between Base-Anes'][n], y = toplot['Distance within Base'][n],
-            label = 'healthy')
-plt.xlabel("bet Base-Anes")
-plt.ylabel("with Base")
-plt.legend()
-pdf.savefig()
-plt.close()
-
-plt.figure()
-n = np.where(toplot['outcome']=='0')[0]
-plt.scatter(x= toplot['Distance between Base-Anes'][n],
-            y = toplot['Distance within Base'][n]-toplot['Distance within Anes'][n],
-            label = 'recovered')
-n = np.where(toplot['outcome']=='1')[0]
-plt.scatter(x= toplot['Distance between Base-Anes'][n],
-            y = toplot['Distance within Base'][n]-toplot['Distance within Anes'][n],
-            label = 'non- recovered')
-n = np.where(toplot['outcome']=='2')[0]
-plt.scatter(x= toplot['Distance between Base-Anes'][n],
-            y = toplot['Distance within Base'][n]-toplot['Distance within Anes'][n],
-            label = 'healthy')
-plt.xlabel("bet Base-Anes")
-plt.ylabel("with Base-with Anes")
-plt.legend()
-pdf.savefig()
-plt.close()
-
-plt.figure()
-n = np.where(toplot['outcome']=='0')[0]
-plt.scatter(x= toplot['Distance between Base-Anes'][n], y = toplot['Distance within Anes'][n],
-            label = 'recovered')
-n = np.where(toplot['outcome']=='1')[0]
-plt.scatter(x= toplot['Distance between Base-Anes'][n], y = toplot['Distance within Anes'][n],
-            label = 'non-recovered')
-n = np.where(toplot['outcome']=='2')[0]
-plt.scatter(x= toplot['Distance between Base-Anes'][n], y = toplot['Distance within Anes'][n],
-            label = 'healthy')
-plt.legend()
-plt.xlabel("bet Base-Anes")
-plt.ylabel("with Anes")
-pdf.savefig()
-plt.close()
 
 pdf.close()
 

@@ -1,5 +1,5 @@
 %% Charlotte Maschke November 11 2020
-% This script goal is to generate the time-resolved wPLI matrices 
+% This script goal is to generate the time-resolved dpli matrices 
 % The matrices will be generated twice: once with overlapping and
 % once with non-overlapping windows in the alpha bandwidth.  
 
@@ -10,23 +10,19 @@ FREQUENCY = "theta";
 
 % Remote Source Setup
 %
-INPUT_DIR = '/home/lotte/projects/def-sblain/lotte/Dim_DOC/data';
-OUTPUT_DIR = strcat("/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/", FREQUENCY, "/wpli/");
+INPUT_DIR = '/home/lotte/projects/def-sblain/lotte/Dim_DOC/data_MDFA';
+OUTPUT_DIR = strcat("/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/", FREQUENCY, "/dpli/");
 NEUROALGO_PATH = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/NeuroAlgo";
 addpath(genpath(NEUROALGO_PATH)); % Add NA library to our path so that we can use it
 
-%just to test
-%INPUT_DIR = 'C:/Users/BIAPT/Desktop/DATA_BASELINE_5min_250Hz';
-%OUTPUT_DIR = 'C:/Users/BIAPT/Desktop/';
-
 % This list contains all participant IDs
-P_IDS = {'WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13','WSAS18', 'WSAS19', 'WSAS20', 'WSAS22'};
-%CONDITION = {'Base', 'Anes', 'Reco'};
-CONDITION = {'Base', 'Anes'};
+P_IDS = {'MDFA05', 'MDFA06', 'MDFA11', 'MDFA15', 'MDFA17'};
+CONDITION = {'Base', 'indlast5'};
 
-%% wPLI Parameters:
+%% dpli Parameters:
 p_value = 0.05;
 number_surrogates = 20;
+
 
 if FREQUENCY == "alpha"
     low_frequency = 8;
@@ -43,23 +39,24 @@ end
 % Size of the cuts for the data
 window_size = 10; % in seconds
 %this parameter is set to 1 (overlapping windows)and 10(non-overlapping windows).
+%step_sizes = ["01", "10"]; % in seconds
 step_sizes = ["01", "10"]; % in seconds
 
 
-%% loop over all participants and stepsizes and calculate wPLI
+%% loop over all particiopants and stepsizes and calculate dpli
 for s = 1:length(step_sizes)
     step = step_sizes{s};
     for p = 1:length(P_IDS)
         p_id = P_IDS{p};
-
         for c = 1:length(CONDITION)
             cond = CONDITION{c};
 
-            fprintf("Analyzing wPLI of participant '%s' _ '%s' with stepsize '%s' \n", p_id, cond, step);
+            fprintf("Analyzing dPLI of participant '%s' _ '%s' with stepsize '%s' \n", p_id, cond, step);
             
-            participant_in = strcat(p_id, '_',cond,'_5min.set');
-            participant_out_path = strcat(OUTPUT_DIR,'step',step,'/wPLI_',FREQUENCY,'_step',step,'_',p_id,'_',cond,'.mat');            
-            participant_channel_path = strcat(OUTPUT_DIR,'step',step,'/wPLI_',FREQUENCY,'_step',step,'_',p_id,'_',cond,'_channels.mat');            
+            %participant_in = strcat('sub-',p_id, '_task-',cond,'_desc-motifs_eeg.set');
+            participant_in = strcat(p_id, '_',cond,'.set');
+            participant_out_path = strcat(OUTPUT_DIR,'step',step,'/dPLI_',FREQUENCY,'_step',step,'_',p_id,'_',cond,'.mat');            
+            participant_channel_path = strcat(OUTPUT_DIR,'step',step,'/dPLI_',FREQUENCY,'_step',step,'_',p_id,'_',cond,'_channels.mat');            
 
             %% Load data
             recording = load_set(participant_in,INPUT_DIR);
@@ -71,9 +68,9 @@ for s = 1:length(step_sizes)
                 step_size = 10;
             end
 
-            % calculate wPLI with NEUROALGO
+            % calculate dPLI with NEUROALGO
             %the following part is the same content as in this function: 
-            %result_wpli = na_wpli(recording, frequency_band, window_size, step_size, number_surrogate, p_value);
+            %result_dpli = na_dpli(recording, frequency_band, window_size, step_size, number_surrogate, p_value);
             % but here, it is parralelized
 
             %% Getting the configuration
@@ -81,7 +78,7 @@ for s = 1:length(step_sizes)
             frequency_band = [low_frequency high_frequency]; % This is in Hz
 
             %% Setting Result
-            result = Result('wpli', recording);
+            result = Result('dpli', recording);
             result.parameters.frequency_band = frequency_band;
             result.parameters.window_size = window_size;
             result.parameters.step_size = step_size;
@@ -99,23 +96,22 @@ for s = 1:length(step_sizes)
             %create windows with filtered data 
             windowed_data = create_sliding_window(recording.filt_data, window_size, step_size, sampling_rate);
 
-            %% initialize empty 3d wpli matrix and fill it in a parallized way
-            wpli_tofill = zeros(number_window, recording.number_channels, recording.number_channels);
+            %% initialize empty 3d dpli matrix and fill it in a parallized way
+            dpli_tofill = zeros(number_window, recording.number_channels, recording.number_channels);
 
             parfor win_i = 1:number_window
-                disp(strcat("wPLI at window: ",string(win_i)," of ", string(number_window))); 
+                disp(strcat("dpli at window: ",string(win_i)," of ", string(number_window))); 
                 segment_data = squeeze(windowed_data(win_i,:,:));
-                wpli_tofill(win_i,:,:) = wpli(segment_data, number_surrogates, p_value);
+                dpli_tofill(win_i,:,:) = dpli(segment_data, number_surrogates, p_value);
             end
+
 
             channels = struct2cell(result.metadata.channels_location);
 
-            %% Average wPLI
-            %result.data.avg_wpli = squeeze(mean(result.data.wpli,1));
-            save(participant_out_path,'wpli_tofill')
+            %% Average dpli
+            %result.data.avg_dpli = squeeze(mean(result.data.dpli,1));
+            save(participant_out_path,'dpli_tofill')
             save(participant_channel_path,'channels')
-
         end
     end
 end
-

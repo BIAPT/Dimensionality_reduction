@@ -2,7 +2,7 @@ classdef ccSBATCH
     % Compute Canada SBATCH submission arguments
     properties
         % Local script, remote working directory (home, by default)
-        localScript = 'wPLI_time_resolved_NET_ICU';
+        localScript = 'dPLI_for_time_resolved_NET_ICU';
         workingDirectory = '.';
 
         % You must specify a compute account (def, rrg, rpp or ctb type)
@@ -18,11 +18,11 @@ classdef ccSBATCH
         memPerCPU = '9000'
 
         % Requested walltime
-        walltime = '06:00:00'
+        walltime = '05:00:00'
 
         % You may use otherOptions to append a string to the qsub command
         % e.g.
-        otherOptions = '--mail-user=q2h3s6p4k0e9o7a5@biaptlab.slack.com --mail-type=ALL --job-name=make-wPLI'
+        otherOptions = '--mail-user=q2h3s6p4k0e9o7a5@biaptlab.slack.com --mail-type=ALL --job-name=make-dPLI'
         
     end
 

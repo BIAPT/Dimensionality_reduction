@@ -3,14 +3,14 @@
 % The matrices will be generated twice: once with overlapping and
 % once with non-overlapping windows in the alpha bandwidth.  
 
-FREQUENCY = "alpha";
+%FREQUENCY = "alpha";
 %FREQUENCY = "theta";
 %FREQUENCY = "delta";
-
+FREQUENCY = "beta";
 
 % Remote Source Setup
 %
-INPUT_DIR = '/home/lotte/projects/def-sblain/lotte/Dim_DOC/data_MDFA';
+INPUT_DIR = '/home/lotte/projects/def-sblain/lotte/Dim_DOC/data';
 OUTPUT_DIR = strcat("/home/lotte/projects/def-sblain/lotte/Dim_DOC/results/", FREQUENCY, "/wpli/");
 NEUROALGO_PATH = "/home/lotte/projects/def-sblain/lotte/Dim_DOC/NeuroAlgo";
 addpath(genpath(NEUROALGO_PATH)); % Add NA library to our path so that we can use it
@@ -20,14 +20,18 @@ addpath(genpath(NEUROALGO_PATH)); % Add NA library to our path so that we can us
 %OUTPUT_DIR = 'C:/Users/BIAPT/Desktop/';
 
 % This list contains all participant IDs
-P_IDS = {'MCD0004', 'MCD0007', 'MCD0008', 'MCD0009', 'MCD0012', 'MCD0013', 'MCD0014', 'MCD0018', 'MCD0021'};
-CONDITION = {'eyesclosed1', 'eyesclosed8', 'emergencefirst5'};
+P_IDS = {'WSAS02', 'WSAS05', 'WSAS09', 'WSAS10', 'WSAS11', 'WSAS12', 'WSAS13','WSAS18', 'WSAS19', 'WSAS20', 'WSAS22'};
+%CONDITION = {'Base', 'Anes', 'Reco'};
+CONDITION = {'Base', 'Anes'};
 
 %% wPLI Parameters:
 p_value = 0.05;
 number_surrogates = 20;
 
-if FREQUENCY == "alpha"
+if FREQUENCY == "beta"
+    low_frequency = 13;
+    high_frequency = 30;
+elseif FREQUENCY == "alpha"
     low_frequency = 8;
     high_frequency = 13;
 elseif FREQUENCY == "theta"
@@ -56,7 +60,7 @@ for s = 1:length(step_sizes)
 
             fprintf("Analyzing wPLI of participant '%s' _ '%s' with stepsize '%s' \n", p_id, cond, step);
             
-            participant_in = strcat('sub-',p_id, '_task-',cond,'_desc-motifs_eeg.set');
+            participant_in = strcat(p_id, '_',cond,'_5min.set');
             participant_out_path = strcat(OUTPUT_DIR,'step',step,'/wPLI_',FREQUENCY,'_step',step,'_',p_id,'_',cond,'.mat');            
             participant_channel_path = strcat(OUTPUT_DIR,'step',step,'/wPLI_',FREQUENCY,'_step',step,'_',p_id,'_',cond,'_channels.mat');            
 
