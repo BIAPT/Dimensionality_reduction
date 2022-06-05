@@ -50,7 +50,7 @@ if __name__ == '__main__':
                         help='path to txt with information about participants')
     parser.add_argument('-frequencyband', type=str,
                         help='lower and upper filer frequency')
-    parser.add_argument('-id', # default = None,
+    parser.add_argument('-id', type = int, # default = None,
                         help='Participant ID to compute')
     args = parser.parse_args()
 
