@@ -4,3 +4,6 @@
 *.mat
 data/*
 *.pdf
+.DS_Store
+RESULTS/*
+*.pyc

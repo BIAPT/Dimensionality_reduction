@@ -1,0 +1,4 @@
+python 1_functional_connectivity.py 
+		-input_dir ~/Documents/GitHub/Dimensionality_reduction/DATA 
+		-output_dir ~/Documents/GitHub/Dimensionality_reduction/RESULTS 
+		-participants ~/Documents/GitHub/Dimensionality_reduction/DATA/data_2states.txt 		-frequencyband 0.5 1.5
