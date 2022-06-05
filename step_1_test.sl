@@ -14,8 +14,8 @@ module load scipy-stack
 source dimred_env/bin/activate
 
 python -u 1_functional_connectivity.py \
-       -input_dir ~/DATA \
-	   	 -output_dir ~/RESULTS \
-		   -participants ~/DATA/data_2states.txt \
+       -input_dir ~/Dim_Red/Dimensionality_reduction/DATA \
+	   	 -output_dir ~/Dim_Red/Dimensionality_reduction/RESULTS \
+		   -participants ~/Dim_Red/Dimensionality_reduction/DATA/data_2states.txt \
 		   -frequencyband alpha \
 		   -id WSAS02
