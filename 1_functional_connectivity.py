@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     # load patient IDS
     info = pd.read_csv(args.participants, sep='\t')
-    P_IDS = [args.id] if args.id else info['Patient']
+    P_IDS = [info['Patient'][args.id]] if args.id else info['Patient']
 
     l_freq, h_freq = FREQUENCIES[args.frequencyband]
 
