@@ -9,13 +9,10 @@
 #SBATCH --mail-user=q2h3s6p4k0e9o7a5@biaptlab.slack.com # adjust this to match your email address
 #SBATCH --mail-type=FAIL
 
-module load python/3.7.9
+module load python/3.9.6
+module load scipy-stack
+source dimred_env/bin/activate
 
-virtualenv --no-download $SLURM_TMPDIR/env
-source $SLURM_TMPDIR/env/bin/activate
-pip install --no-index --upgrade pip
-pip install --no-index pandas
-pip install --no-index matplotlib
 python -u 1_functional_connectivity.py \
        -input_dir ~/DATA \
 	   	 -output_dir ~/RESULTS \
