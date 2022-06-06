@@ -6,4 +6,5 @@ data/*
 *.pdf
 .DS_Store
 RESULTS/*
+RESULTS_CC/*
 *.pyc

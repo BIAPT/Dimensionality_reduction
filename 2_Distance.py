@@ -17,12 +17,14 @@ import os
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description='Calculates Disctance matrix from wPLI functional connectivity.')
-    parser.add_argument('input_dir', type=str, action='store',
+    parser.add_argument('-input_dir', type=str, action='store',
                         help='folder name containing the data in epoched .fif data in BIDS format')
-    parser.add_argument('output_dir', type=str, action='store',
+    parser.add_argument('-output_dir', type=str, action='store',
                         help='folder name where to save the functional connectivity')
-    parser.add_argument('participants', type=str, action='store',
+    parser.add_argument('-participants', type=str, action='store',
                         help='path to txt with information about participants')
+    parser.add_argument('-frequencyband', type=str,
+                        help='lower and upper filer frequency')
     args = parser.parse_args()
 
 
@@ -36,7 +38,7 @@ if __name__ == '__main__':
         os.makedirs(output_dir)
 
     # prepare output pdf
-    pdf = PdfPages(f"{output_dir}/wPLI_Distance.pdf")
+    pdf = PdfPages(f"{output_dir}/wPLI_Distance_{args.frequencyband}.pdf")
 
     # load patient IDS
     info = pd.read_csv(args.participants, sep='\t')
@@ -81,8 +83,8 @@ if __name__ == '__main__':
         """
         1)    IMPORT DATA
         """
-        wpli_Base = np.load(f"{args.input_dir}/WPLI_4_8_Hz_{p_id}_Base.npy")
-        wpli_Anes = np.load(f"{args.input_dir}/WPLI_4_8_Hz_{p_id}_Anes.npy")
+        wpli_Base = np.load(f"{args.input_dir}/wPLI_{args.frequencyband}/WPLI_{args.frequencyband}_{p_id}_Base.npy")
+        wpli_Anes = np.load(f"{args.input_dir}/wPLI_{args.frequencyband}/WPLI_{args.frequencyband}_{p_id}_Anes.npy")
 
         print(p_id)
         print(wpli_Base.shape)
@@ -129,10 +131,12 @@ if __name__ == '__main__':
 
         plt.figure()
         n = np.where(Y == 0)
-        plt.scatter(data_pca2[n, 0], data_pca2[n, 1], c='red', label='Base')
+        a = np.linspace(0.1, 1, len(n[0]))
+        plt.scatter(data_pca2[n, 0], data_pca2[n, 1], alpha=a, c='red', label='Base')
         n = np.where(Y == 1)
-        plt.scatter(data_pca2[n, 0], data_pca2[n, 1], c='blue', label='Anes')
-        plt.legend()
+        a = np.linspace(0.1, 1, len(n[0]))
+        plt.scatter(data_pca2[n, 0], data_pca2[n, 1], alpha=a, c='blue', label='Anes')
+        #plt.legend()
         plt.title(p_id)
         plt.xlabel('PC 1')
         plt.ylabel('PC 2')

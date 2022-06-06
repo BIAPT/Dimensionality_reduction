@@ -15,7 +15,7 @@ FREQUENCIES  = {
   "alpha": (8,13),
   "beta": (13,30),
   "gamma": (30,45),
-  "fullband": (30,45),
+  "fullband": (1,45),
   }
 
 WINDOW_LENGTH = 10
@@ -67,7 +67,7 @@ if __name__ == '__main__':
 
     # load patient IDS
     info = pd.read_csv(args.participants, sep='\t')
-    P_IDS = [info['Patient'][args.id]] if args.id else info['Patient']
+    P_IDS = [info['Patient'][args.id]] if args.id is not None else info['Patient']
 
     l_freq, h_freq = FREQUENCIES[args.frequencyband]
 
