@@ -241,7 +241,7 @@ if __name__ == '__main__':
     toplot['W_Dis_Anes'] = Dist_w_Anes_raw
     toplot['Norm_W_Dis_Anes'] = Dist_w_Anes_norm
 
-    toplot.to_csv(f"{output_dir}/DimRed_wPLI.csv", index=False, sep=';')
+    toplot.to_csv(f"{output_dir}/DimRed_wPLI_{args.frequencyband}.csv", index=False, sep=';')
 
     # 0 = WSAS non-recovered
     # 1 = WSAS recovered

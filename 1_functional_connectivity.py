@@ -19,7 +19,7 @@ FREQUENCIES  = {
   }
 
 WINDOW_LENGTH = 10
-STEP_SIZE = 1
+STEP_SIZE = 10
 N_SURROGATES = 20
 
 def data_import(input_dir, p_id, cond):
